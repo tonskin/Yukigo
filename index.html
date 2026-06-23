@@ -3,84 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>上海行！！寶藏酒店尋寶</title>
+  <title>上海行寶藏酒店尋寶</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body { background-color: #0f172a; color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    /* 卡片翻轉動畫設定 */
+    body { background-color: #0f172a; color: #f8fafc; }
     .flip-card { perspective: 1000px; height: 450px; }
-    .flip-card-inner {
-      position: relative; width: 100%; height: 100%; text-align: center;
-      transition: transform 0.6s; transform-style: preserve-3d;
-    }
+    .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
     .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
-    .flip-card-front, .flip-card-back {
-      position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
-      border-radius: 1rem; padding: 1.25rem; display: flex; flex-direction: column; justify-content: flex-start;
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-    }
-    .flip-card-front { background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid #334155; }
-    .flip-card-back {
-      background: linear-gradient(145deg, #3b0764, #170229); border: 1px solid #6b21a8; transform: rotateY(180deg);
-    }
-    .hotel-image {
-      width: 100%; height: 160px; border-radius: 0.75rem; object-fit: cover;
-      margin-bottom: 0.75rem; border: 1px solid #334155;
-    }
-    /* 公仔頭像特效 */
-    .avatar-img {
-      width: 90px; height: 90px; border-radius: 50%; object-fit: cover;
-      border: 3px solid #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
-      cursor: pointer; transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .avatar-img:hover { transform: scale(1.1); box-shadow: 0 0 25px rgba(56, 189, 248, 0.9); }
-    .cursor::after { content: '|'; animation: blink 1s step-end infinite; }
-    @keyframes blink { 50% { opacity: 0; } }
+    .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 1rem; padding: 1.25rem; display: flex; flex-direction: column; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); }
+    .flip-card-front { background: #1e293b; border: 1px solid #334155; }
+    .flip-card-back { background: #3b0764; border: 1px solid #6b21a8; transform: rotateY(180deg); }
+    .hotel-image { width: 100%; height: 160px; border-radius: 0.75rem; object-fit: cover; margin-bottom: 0.75rem; }
+    .avatar-img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; cursor: pointer; border: 3px solid #38bdf8; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
-
-  <div id="stage-1" class="text-center w-full max-w-4xl transition-opacity duration-500">
-    <h1 class="text-3xl md:text-5xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 py-2">上海行寶藏酒店尋寶</h1>
-    <p class="text-gray-400 mb-10 text-lg">點擊「你」的專屬公仔進入網站</p>
-    <div class="flex flex-wrap justify-center gap-8">
-      <div class="flex flex-col items-center" onclick="login('01')">
-        <img src="01.jpg" class="avatar-img" alt="公仔01" onerror="this.src='https://ui-avatars.com/api/?name=01&background=0D8ABC&color=fff&size=128'">
-        <span class="mt-3 text-sm font-semibold text-cyan-300">#01</span>
-      </div>
-      <div class="flex flex-col items-center" onclick="login('02')">
-        <img src="02.jpg" class="avatar-img" alt="公仔02" onerror="this.src='https://ui-avatars.com/api/?name=02&background=0D8ABC&color=fff&size=128'">
-        <span class="mt-3 text-sm font-semibold text-cyan-300">#02</span>
-      </div>
-      <div class="flex flex-col items-center" onclick="login('03')">
-        <img src="03.jpg" class="avatar-img" alt="公仔03" onerror="this.src='https://ui-avatars.com/api/?name=03&background=0D8ABC&color=fff&size=128'">
-        <span class="mt-3 text-sm font-semibold text-cyan-300">#03</span>
-      </div>
-      <div class="flex flex-col items-center" onclick="login('04')">
-        <img src="04.jpg" class="avatar-img" alt="公仔04" onerror="this.src='https://ui-avatars.com/api/?name=04&background=0D8ABC&color=fff&size=128'">
-        <span class="mt-3 text-sm font-semibold text-cyan-300">#04</span>
-      </div>
-      <div class="flex flex-col items-center" onclick="login('05')">
-        <img src="05.jpg" class="avatar-img" alt="公仔05" onerror="this.src='https://ui-avatars.com/api/?name=05&background=0D8ABC&color=fff&size=128'">
-        <span class="mt-3 text-sm font-semibold text-cyan-300">#05</span>
-      </div>
+  <div id="stage-1" class="text-center w-full max-w-4xl">
+    <h1 class="text-4xl font-bold mb-8 text-cyan-400">上海行寶藏酒店尋寶</h1>
+    <div class="flex flex-wrap justify-center gap-6">
+      <div onclick="login('01')"><img src="01.jpg" class="avatar-img" alt="01"><p class="mt-2 text-cyan-300">#01</p></div>
+      <div onclick="login('02')"><img src="02.jpg" class="avatar-img" alt="02"><p class="mt-2 text-cyan-300">#02</p></div>
+      <div onclick="login('03')"><img src="03.jpg" class="avatar-img" alt="03"><p class="mt-2 text-cyan-300">#03</p></div>
+      <div onclick="login('04')"><img src="04.jpg" class="avatar-img" alt="04"><p class="mt-2 text-cyan-300">#04</p></div>
+      <div onclick="login('05')"><img src="05.jpg" class="avatar-img" alt="05"><p class="mt-2 text-cyan-300">#05</p></div>
     </div>
   </div>
-
-  <div id="stage-2" class="hidden text-center w-full max-w-2xl transition-opacity duration-1000">
-    <div id="typewriter-text" class="text-left text-lg md:text-xl leading-relaxed text-gray-200 min-h-[300px] bg-slate-900/60 p-6 rounded-2xl border border-slate-800 backdrop-blur-sm shadow-xl"></div>
-    <button id="btn-start" onclick="startSelection()" class="hidden mt-8 px-10 py-4 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold rounded-full shadow-lg transform transition hover:scale-105 tracking-wider">
-      點擊開始尋寶
-    </button>
-  </div>
-
-  <div id="stage-3" class="hidden w-full max-w-6xl">
-    <h2 class="text-3xl font-bold text-center mb-10 text-cyan-400 tracking-wide">精選 11 大寶藏酒店</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="hotel-grid"></div>
-  </div>
-
+  <div id="stage-2" class="hidden text-center"><p class="text-xl text-gray-200 mb-8">準備好開始了嗎？</p><button onclick="startSelection()" class="px-10 py-4 bg-blue-600 rounded-full font-bold">點擊開始尋寶</button></div>
+  <div id="stage-3" class="hidden w-full max-w-6xl"><div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="hotel-grid"></div></div>
   <script>
-    // === 飯店資料庫 (注意唯庭飯店背面照已修正為大寫 1A.jpg) ===
     const hotels = [
-      { name: "唯庭飯店", exteriorImageUrl: "1.jpg", attractionImageUrl: "1A.jpg", location: "人民廣場地鐵站", stars: "3 星精品", sellPoint: "年輕科技感十足，CP 值首選", hiddenPoint: "預算小資族最愛！便宜一千多還有附早餐 🥞", price: "TWD 15,365 / 人" },
-      { name: "如家商旅飯店", exteriorImageUrl: "2.jpg", attractionImageUrl: "2a.jpg",
+      { n: "唯庭飯店", e: "1.jpg", a: "1a.jpg", p: "15,365" },
+      { n: "如家商旅", e: "2.jpg", a: "2a.jpg", p: "15,700" },
+      { n: "CitiGO", e: "3.jpg", a: "3a.jpg", p: "15,809" },
+      { n: "世紀亞島", e: "4.jpg", a: "4a.jpg", p: "16,242" },
+      { n: "全季(金陵)", e: "5.jpg", a: "5a.jpg", p: "16,254" },
+      { n: "全季(山東)", e: "6.jpg", a: "6a.jpg", p: "16,301" },
+      { n: "和頤至尊", e: "7.jpg", a: "7a.jpg", p: "16,500" },
+      { n: "桔子水晶", e: "8.jpg", a: "8a.jpg", p: "17,000" },
+      { n: "太古匯亞朵", e: "9.jpg", a: "9a.jpg", p: "17,100" },
+      { n: "全季(九江)", e: "10.jpg", a: "10a.jpg", p: "17,383" },
+      { n: "錦江都城", e: "11.jpg", a: "11a.jpg", p: "17,900" }
+    ];
+    function login(id) { document.getElementById('stage-1').classList.add('hidden'); document.getElementById('stage-2').classList.remove('hidden'); }
+    function startSelection() { document.getElementById('stage-2').classList.add('hidden'); document.getElementById('stage-3').classList.remove('hidden'); render(); }
+    function render() {
+      const g = document.getElementById('hotel-grid');
+      hotels.forEach(h => {
+        g.innerHTML += `<div class="flip-card cursor-pointer" onclick="this.classList.toggle('flipped')">
+          <div class="flip-card-inner">
+            <div class="flip-card-front"><img src="${h.e}" class="hotel-image"><h3 class="text-xl font-bold">${h.n}</h3></div>
+            <div class="flip-card-back"><img src="${h.a}" class="hotel-image"><p class="text-2xl font-bold mt-4">${h.p} /人</p></div>
+          </div>
+        </div>`;
+      });
+    }
+  </script>
+</body>
+</html>

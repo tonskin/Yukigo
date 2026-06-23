@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>上海行寶藏酒店尋寶</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #0f172a; color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    /* 卡片翻轉動畫設定 */
+    .flip-card { perspective: 1000px; height: 350px; }
+    .flip-card-inner {
+      position: relative; width: 100%; height: 100%; text-align: center;
+      transition: transform 0.6s; transform-style: preserve-3d;
+    }
+    .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+    .flip-card-front, .flip-card-back {
+      position: absolute; width: 100%; height: 100%; backface-visibility: hidden;
+      border-radius: 1rem; padding: 1.5rem; display: flex; flex-direction: column; justify-content: center;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    }
+    .flip-card-front { background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid #334155; }
+    .flip-card-back {
+      background: linear-gradient(145deg, #3b0764, #170229); border: 1px solid #6b21a8;
+      transform: rotateY(180deg);
+    }
+    /* 公仔頭像特效 */
+    .avatar-img {
+      width: 80px; height: 80px; border-radius: 50%; object-fit: cover;
+      border: 3px solid #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+      cursor: pointer; transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .avatar-img:hover { transform: scale(1.1); box-shadow: 0 0 25px rgba(56, 189, 248, 0.9); }
+    /* 打字機游標 */
+    .cursor::after { content: '|'; animation: blink 1s step-end infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+  <div id="stage-1" class="text-center w-full max-w-4xl transition-opacity duration-500">
+    <h1 class="text-3xl md:text-5xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">上海行寶藏酒店尋寶</h1>
+    <p class="text-gray-400 mb-10 text-lg">點擊「你」的專屬公仔進入</p>
+    <div class="flex flex-wrap justify-center gap-6">
+      <div class="flex flex-col items-center" onclick="login('01')">
+        <img src="https://ui-avatars.com/api/?name=01&background=0D8ABC&color=fff&size=128" class="avatar-img" alt="公仔01">
+        <span class="mt-2 text-sm text-cyan-300">#01</span>
+      </div>
+      <div class="flex flex-col items-center" onclick="login('02')">
+        <img src="https://ui-avatars.com/api/?name=02&background=0D8ABC&color=fff&size=128" class="avatar-img" alt="公仔02">
+        <span class="mt-2 text-sm text-cyan-300">#02</span>
+      </div>
+      <div class="flex flex-col items-center" onclick="login('03')">
+        <img src="https://ui-avatars.com/api/?name=03&background=0D8ABC&color=fff&size=128" class="avatar-img" alt="公仔03">
+        <span class="mt-2 text-sm text-cyan-300">#03</span>
+      </div>
+      <div class="flex flex-col items-center" onclick="login('04')">
+        <img src="https://ui-avatars.com/api/?name=04&background=0D8ABC&color=fff&size=128" class="avatar-img" alt="公仔04">
+        <span class="mt-2 text-sm text-cyan-300">#04</span>
+      </div>
+      <div class="flex flex-col items-center" onclick="login('05')">
+        <img src="https://ui-avatars.com/api/?name=05&background=0D8ABC&color=fff&size=128" class="avatar-img" alt="公仔05">
+        <span class="mt-2 text-sm text-cyan-300">#05</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="stage-2" class="hidden text-center w-full max-w-2xl transition-opacity duration-1000">
+    <div id="typewriter-text" class="text-left text-lg md:text-xl leading-relaxed text-gray-200 min-h-[300px]"></div>
+    <button id="btn-start" onclick="startSelection()" class="hidden mt-8 px-8 py-3 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold rounded-full shadow-lg transform transition hover:scale-105">
+      點擊開始尋寶
+    </button>
+  </div>
+
+  <div id="stage-3" class="hidden w-full max-w-6xl">
+    <h2 class="text-3xl font-bold text-center mb-10 text-cyan-400">精選 11 大寶藏酒店</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="hotel-grid">
+      </div>
+  </div>
+
+  <script>
+    // 飯店資料庫
+    const hotels = [
+      { name: "和頤至尊飯店", location: "南京路步行街正中心", stars: "4 星級", sellPoint: "出門就是最熱鬧商圈，逛街無敵！", hiddenPoint: "航班完美搭配早去晚回！頭尾兩天玩好玩滿！", price: "TWD 16,500 / 人" },
+      { name: "全季飯店 (外灘金陵東路店)", location: "靠近外灘", stars: "3 星精品", sellPoint: "極簡溫馨無印風，質感穩定", hiddenPoint: "高 CP 值黑馬！而且明確包含自助早餐 🥞", price: "TWD 16,254 / 人" },
+      { name: "世紀亞島飯店", location: "鄰近南京路步行街", stars: "4 星級", sellPoint: "空間寬敞舒適，整體評價極高", hiddenPoint: "只要一萬六出頭，亮點資訊還包含早餐！", price: "TWD 16,242 / 人" },
+      { name: "唯庭飯店", location: "人民廣場地鐵站", stars: "3 星精品", sellPoint: "年輕科技感十足，CP 值首選", hiddenPoint: "預算小資族最愛！便宜一千多還有附早餐 🥞", price: "TWD 15,365 / 人" },
+      { name: "全季飯店 (外灘九江路店)", location: "外灘核心區", stars: "3 星精品", sellPoint: "木質極簡風格，絕美夜景", hiddenPoint: "浪漫外灘首選，明確標示含早餐 🥞", price: "TWD 17,383 / 人" },
+      { name: "上海靜安 CitiGO 歡閣飯店", location: "靜安區", stars: "4 星級", sellPoint: "文青潮流區，大廳像酒吧", hiddenPoint: "超強科技感，房間配備智慧音箱！", price: "TWD 15,809 / 人" },
+      { name: "太古匯亞朵 X 飯店", location: "靜安區", stars: "4 星級", sellPoint: "人文閱讀與茶文化，質感極佳", hiddenPoint: "靜謐悠閒的氛圍，亮點資訊含早餐 🥞", price: "預估 TWD 17,100 / 人" },
+      { name: "錦江都城 (南京飯店)", location: "人民廣場", stars: "4 星級", sellPoint: "歷史保護建築，老上海復古風", hiddenPoint: "高檔享受！體驗民國時期的海派風情", price: "預估 TWD 17,900 / 人" },
+      { name: "桔子水晶飯店", location: "外灘金陵東路", stars: "4 星級", sellPoint: "都會時尚設計，房間採光棒", hiddenPoint: "中高階質感住宿，拍照打卡超美！", price: "預估 TWD 17,000 / 人" },
+      { name: "全季飯店 (外灘山東中路店)", location: "南京東路地鐵站", stars: "3 星精品", sellPoint: "全季穩定品質，交通超便利", hiddenPoint: "中階主力戰區，離捷運站超近！", price: "TWD 16,301 / 人" },
+      { name: "如家商旅飯店", location: "外灘中心", stars: "3 星經濟", sellPoint: "乾淨便利，機能為主", hiddenPoint: "把省下來的預算拿去吃大餐血拼！", price: "預估 TWD 15,700 / 人" }
+    ];
+
+    // Webhook URL (之後可以換成 Formspree)
+    const webhookUrl = ''; 
+
+    // 登入邏輯
+    function login(id) {
+      localStorage.setItem('shanghai_guest_id', id);
+      document.getElementById('stage-1').classList.add('hidden');
+      document.getElementById('stage-2').classList.remove('hidden');
+      typeWriter();
+    }
+
+    // 打字機特效
+    const introText = "想必這陣子，大家對於這趟上海行的班機、住宿跟在地文化，都有一些想法跟期待了吧？\n\n費用大概也略知一二：機票大約 11,000-12,000 元，住宿一人抓 3,000 元，也就是說兩個人一房，一晚差不多是 1,200 元的預算。\n\n在台灣 1,200 元的房型長什麼樣子，你們心裡有數。更何況，這次我們去的是高消費、高所得的魔都上海。\n\n不過別擔心...\n出現了一個高顏值高智慧的我 😎✨\n\n我精選了 11 間風格迥異、優點不同的寶藏酒店。現在，拋開價格的偏見，跟著感覺走，選出你的最愛吧！";
+    let i = 0;
+    function typeWriter() {
+      const el = document.getElementById("typewriter-text");
+      el.classList.add('cursor');
+      if (i < introText.length) {
+        if(introText.charAt(i) === '\n') {
+            el.innerHTML += '<br>';
+        } else {
+            el.innerHTML += introText.charAt(i);
+        }
+        i++;
+        setTimeout(typeWriter, 40);
+      } else {
+        el.classList.remove('cursor');
+        document.getElementById('btn-start').classList.remove('hidden');
+      }
+    }
+
+    // 進入盲測區
+    function startSelection() {
+      document.getElementById('stage-2').classList.add('hidden');
+      document.getElementById('stage-3').classList.remove('hidden');
+      renderHotels();
+    }
+
+    // 渲染飯店卡片
+    function renderHotels() {
+      const grid = document.getElementById('hotel-grid');
+      grid.innerHTML = '';
+      hotels.forEach((hotel, index) => {
+        const cardHTML = `
+          <div class="flip-card cursor-pointer" onclick="this.classList.toggle('flipped')">
+            <div class="flip-card-inner">
+              <div class="flip-card-front">
+                <h3 class="text-xl font-bold text-cyan-300 mb-4">${hotel.name}</h3>
+                <p class="text-sm text-gray-300 mb-2">📍 ${hotel.location}</p>
+                <p class="text-sm text-yellow-400 mb-4">⭐ ${hotel.stars}</p>
+                <div class="bg-slate-800 p-3 rounded-lg text-sm text-gray-200">
+                  💡 ${hotel.sellPoint}
+                </div>
+                <button class="mt-auto mx-auto border border-cyan-500 text-cyan-400 px-4 py-2 rounded-full text-xs hover:bg-cyan-900 transition">點擊翻牌看亮點</button>
+              </div>
+              <div class="flip-card-back">
+                <h3 class="text-lg font-bold text-purple-300 mb-4">${hotel.name}</h3>
+                <p class="text-md text-white font-semibold mb-6">🎁 ${hotel.hiddenPoint}</p>
+                <div class="bg-yellow-500 text-gray-900 font-bold text-xl py-3 px-4 rounded-lg shadow-[0_0_15px_rgba(234,179,8,0.6)] mb-6">
+                  ${hotel.price}
+                </div>
+                <button onclick="event.stopPropagation(); submitWish('${hotel.name}')" class="mt-auto mx-auto bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition hover:scale-105">
+                  💗 收藏本酒店
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+        grid.innerHTML += cardHTML;
+      });
+    }
+
+    // 送出收藏
+    function submitWish(hotelName) {
+      const guestId = localStorage.getItem('shanghai_guest_id') || '未知訪客';
+      
+      // 如果有設定 webhook，則發送請求
+      if(webhookUrl) {
+        fetch(webhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ guest: guestId, hotel: hotelName, time: new Date().toISOString() })
+        }).then(() => {
+          alert('💖 收藏成功！主辦人已收到你的許願：' + hotelName);
+        }).catch(err => {
+          alert('收藏成功 (本地紀錄)！：' + hotelName);
+        });
+      } else {
+        alert('💖 收藏成功！主辦人已收到你的許願：' + hotelName);
+      }
+    }
+  </script>
+</body>
+</html>
